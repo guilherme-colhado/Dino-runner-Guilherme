@@ -3,8 +3,8 @@ from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING
 
 X_POS = 80
 Y_POS = 310
-JUMP_VEL = 8.5
-Y_DUCK = 34
+JUMP_AND_DUCK_VEL = 8.5
+Y_POS_DUCK = 344
 
 class Dinosaur:
     def __init__(self):
@@ -16,7 +16,7 @@ class Dinosaur:
         self.dino_run = True
         self.dino_duck = False
         self.dino_jump = False
-        self.jump_vel = JUMP_VEL
+        self.jump_duck_vel = JUMP_AND_DUCK_VEL
         
     def update(self,user_input):
         if self.dino_run:
@@ -31,7 +31,8 @@ class Dinosaur:
             self.dino_run = False
         elif not self.dino_jump:
             self.dino_jump = False
-            self.dino_run = True
+            if not self.dino_duck:
+                self.dino_run = True
 
         if user_input[pygame.K_DOWN]:
             self.dino_duck = True
@@ -42,28 +43,35 @@ class Dinosaur:
             self.step_index = 0     
     
     def run(self):
-        if not self.dino_duck:
-            self.image = RUNNING[0] if self.step_index < 5 else RUNNING[1]
-        else:
-            self.image = DUCKING[0] if self.step_index < 5 else DUCKING[1]
+        self.image = RUNNING[0] if self.step_index < 5 else RUNNING[1]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = X_POS
         self.dino_rect.y = Y_POS
-        self.step_index += 1
+        self.step_index += 1.2
     
     def jump(self):
         self.image = JUMPING
-        if self.dino_jump:
-            self.dino_rect.y -= self.jump_vel * 4
-            self.jump_vel -= 0.8
+        if self.dino_jump and not self.dino_duck:
+            self.dino_rect.y -= self.jump_duck_vel * 4
+            self.jump_duck_vel -= 0.8
             
-        if self.jump_vel < -JUMP_VEL:
+        if self.jump_duck_vel < -JUMP_AND_DUCK_VEL:
             self.dino_rect.y = Y_POS
             self.dino_jump = False
-            self.jump_vel = JUMP_VEL
+            self.jump_duck_vel = JUMP_AND_DUCK_VEL
     
     def duck(self):
-        self.dino_rect.y = Y_POS + Y_DUCK
+        if self.dino_duck:
+            self.image = DUCKING[0] if self.step_index < 5 else DUCKING[1]
+            self.dino_rect.x = X_POS
+            self.step_index += 1
+            if self.dino_jump and self.dino_rect.y < Y_POS_DUCK:
+                self.dino_rect.y -= self.jump_duck_vel * 4
+                self.jump_duck_vel -= 1
+            else:
+                self.dino_rect.y = Y_POS_DUCK
+                self.jump_duck_vel = JUMP_AND_DUCK_VEL
+                self.dino_jump = False
     
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
