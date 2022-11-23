@@ -1,6 +1,4 @@
 import pygame
-from pygame import font
-
 import time
 
 from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
@@ -17,6 +15,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.playing = False
         self.game_speed = 20
+        self.start = time.time()
+        self.black = False
         self.x_pos_bg = 0
         self.y_pos_bg = 380
         self.player = Dinosaur()
@@ -41,15 +41,21 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.score.update()
+        if self.score.score % 50 == 0:
+            if time.time() - self.start >= 1:
+                self.black = not self.black
+                self.start = time.time()
         self.obstacle_manager.update(self)
-        
 
     def draw(self):
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
+        if self.black:        
+            self.screen.fill((40, 42, 53))
+        else:
+            self.screen.fill((255, 255, 255))
+        self.score.draw(self.screen)
         self.draw_background()
         self.player.draw(self.screen)
-        self.score.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()

@@ -46,10 +46,11 @@ class Dinosaur(Sprite):
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = X_POS
         self.dino_rect.y = Y_POS
-        self.step_index += 1.2
+        self.step_index += 1
     
     def jump(self):
         self.image = JUMPING
+        
         if self.dino_jump and not self.dino_duck:
             self.dino_rect.y -= self.jump_duck_vel * 4
             self.jump_duck_vel -= 0.8
