@@ -4,7 +4,7 @@ from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, T
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 
-FONT_STYLE = "freesansbold.ttf"
+FONT_STYLE = "dino_runner/assets/Fonts/PressStart2P-Regular.ttf"
 HALF_SCREEN_HEIGHT = SCREEN_HEIGHT // 2
 HALF_SCREEN_WIDTH = SCREEN_WIDTH // 2
         
@@ -64,6 +64,7 @@ class Game:
         self.score += 1
         if self.score % 100 == 0:
             self.game_speed += 5
+        if self.game_speed % 250 == 0:
             self.black = not self.black
 
     def draw(self):
@@ -98,8 +99,8 @@ class Game:
         self.x_pos_bg -= self.game_speed
 
     def draw_score(self):
-        self.write(f"Score: {self.score}", 1000, 50)
-        self.write(f"Max Score: {self.max_score}", 850, 50)
+        self.write(f"Score:{self.score}", 960, 50)
+        self.write(f"Max Score:{self.max_score}", 680, 50)
 
     def handle_events_on_menu(self):
         for event in pygame.event.get():
@@ -118,9 +119,9 @@ class Game:
         else:
             self.write("Press any key to restart", HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT)
             # Mostrar score atingido e death_count
-            self.write(f"Deaths: {self.death_count}", HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT + 50)
-            self.write(f"Score: {self.score_actual}", HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT + 100)
-            self.write(f"Max Score: {self.max_score}", HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT + 150)
+            self.write(f"Deaths:{self.death_count}", HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT + 50)
+            self.write(f"Score:{self.score_actual}", HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT + 100)
+            self.write(f"Max Score:{self.max_score}", HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT + 150)
             # Quando reiniciar, resetar game_speed e score
             # método reutilizável para desenhar os textos
             self.screen.blit(ICON, (HALF_SCREEN_WIDTH - 40, HALF_SCREEN_HEIGHT - 140))

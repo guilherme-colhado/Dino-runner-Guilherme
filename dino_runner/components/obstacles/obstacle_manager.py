@@ -1,7 +1,8 @@
 import random
+import time
 import pygame
 
-from dino_runner.utils.constants import SMALL_CACTUS, LARGE_CACTUS, BIRD
+from dino_runner.utils.constants import SMALL_CACTUS, LARGE_CACTUS, BIRD, SCREEN_WIDTH
 from dino_runner.components.obstacles.cactus import Cactus
 from dino_runner.components.obstacles.bird import Bird
 
@@ -14,25 +15,26 @@ class ObstacleManager:
         self.typeObstacles = [SMALL_CACTUS, LARGE_CACTUS, BIRD]
         
     def update(self, game):
-        if len(self.obstacles) == 0:
-            if game.score < 25:
-                self.obstacles.append(Cactus(self.typeObstacles[0]))
-            elif game.score < 50:
-                type = random.randint(0, 1)
-                self.obstacles.append(Cactus(self.typeObstacles[type]))
-            else:
-                type = random.randint(0, 2)
-                if type < 2:
-                    self.obstacles.append(Cactus(self.typeObstacles[type]))
+        if(game.score <= 200):
+            if len(self.obstacles) == 0:
+                self.append(game)
+        else:
+            if len(self.obstacles) <= 1:
+                if len(self.obstacles) == 1:
+                    if self.obstacles[0].rect.x <= SCREEN_WIDTH / 2:
+                        self.append(game)
                 else:
-                    self.obstacles.append(Bird(self.typeObstacles[type]))
-                    
+                    self.append(game)
+        
         for obstacle in self.obstacles:
             if isinstance(obstacle, Bird):
                 obstacle.fly()
             
             obstacle.update(game.game_speed, self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):
+                death = pygame.mixer.music
+                death.load("dino_runner/assets/Songs/death.wav")
+                death.play()
                 pygame.time.delay(500)
                 game.playing = False
                 game.death_count += 1
@@ -41,11 +43,23 @@ class ObstacleManager:
                 if(game.score_actual > game.max_score):
                     game.max_score = game.score_actual
                 game.score = 0
-                game.player.dino_rect = game.player.image.get_rect()
-                game.player.dino_rect.y = Y_POS
-                game.player.dino_rect.x = X_POS
+                game.black = False
+                game.player.reset()
                 break
     
+    def append(self, game):
+        if game.score < 100:
+            self.obstacles.append(Cactus(self.typeObstacles[0]))
+        elif game.score < 200:
+            type = random.randint(0, 1)
+            self.obstacles.append(Cactus(self.typeObstacles[type]))
+        else:
+            type = random.randint(0, 2)
+            if type < 2:
+                self.obstacles.append(Cactus(self.typeObstacles[type]))
+            else:
+                self.obstacles.append(Bird(self.typeObstacles[type]))
+
     def reset_obstacles(self):
         self.obstacles = []
         
