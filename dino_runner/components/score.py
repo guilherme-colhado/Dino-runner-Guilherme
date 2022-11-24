@@ -7,7 +7,7 @@ from dino_runner.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 class Score(Sprite):
     def __init__(self):
         self.score = 1
-        self.string_score = "000"
+        self.string_score = "001"
         self.start = time.time()
         pygame.font.init()
         self.font = pygame.font.SysFont('Comic Sans MS', 24)
