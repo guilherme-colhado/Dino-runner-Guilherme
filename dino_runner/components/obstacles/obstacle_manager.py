@@ -14,6 +14,7 @@ class ObstacleManager:
         self.obstacles = []
         self.typeObstacles = [SMALL_CACTUS, LARGE_CACTUS, BIRD]
         
+        
     def update(self, game):
         if(game.score <= 200):
             if len(self.obstacles) == 0:
@@ -32,20 +33,23 @@ class ObstacleManager:
             
             obstacle.update(game.game_speed, self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):
-                death = pygame.mixer.music
-                death.load("dino_runner/assets/Songs/death.wav")
-                death.play()
-                pygame.time.delay(500)
-                game.playing = False
-                game.death_count += 1
-                game.game_speed = 20
-                game.score_actual = game.score
-                if(game.score_actual > game.max_score):
-                    game.max_score = game.score_actual
-                game.score = 0
-                game.black = False
-                game.player.reset()
-                break
+                if not game.player.has_power_up:
+                    death = pygame.mixer.music
+                    death.load("dino_runner/assets/Songs/death.wav")
+                    death.play()
+                    pygame.time.delay(500)
+                    game.playing = False
+                    game.death_count += 1
+                    game.game_speed = 20
+                    game.score_actual = game.score
+                    if(game.score_actual > game.max_score):
+                        game.max_score = game.score_actual
+                    game.score = 0
+                    game.black = False
+                    game.player.reset()
+                    break
+                else:
+                    self.obstacles.remove(obstacle)
     
     def append(self, game):
         if game.score < 100:
