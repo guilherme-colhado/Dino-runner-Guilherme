@@ -67,7 +67,7 @@ class Game:
     def update_score(self):
         self.score += 1
         if self.score % 100 == 0:
-            self.game_speed += 5
+            self.game_speed += 0
         if self.score % 250 == 0:
             self.black = not self.black
 
@@ -82,6 +82,7 @@ class Game:
         self.draw_background(True)
         self.player.draw(self.screen, self.score)
         self.obstacle_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
         self.draw_power_up_time()
         self.draw_score()
         pygame.display.update()
