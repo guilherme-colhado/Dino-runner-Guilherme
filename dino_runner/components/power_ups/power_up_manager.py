@@ -10,7 +10,7 @@ class PowerUpManager:
     def __init__(self):
         self.power_ups = []
         self.when_appears = random.randint(200, 300) 
-        self.type_powers = [Heart]
+        self.type_powers = [Shield, Hammer, Time, Heart]
 
     def generate_power_up(self, score, player):
         if self.when_appears == score:
