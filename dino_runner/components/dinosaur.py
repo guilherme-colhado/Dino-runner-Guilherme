@@ -1,7 +1,7 @@
 import time
 import pygame
 from pygame.sprite import Sprite
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEFAULT_TYPE, SHIELD_TYPE, DUCKING_SHIELD, JUMPING_SHIELD, RUNNING_SHIELD, HAMMER_TYPE, DUCKING_HAMMER, JUMPING_HAMMER, RUNNING_HAMMER
+from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEFAULT_TYPE, SHIELD_TYPE, DUCKING_SHIELD, JUMPING_SHIELD, RUNNING_SHIELD, HAMMER_TYPE, DUCKING_HAMMER, JUMPING_HAMMER, RUNNING_HAMMER, HEART
 
 X_POS = 80
 Y_POS = 310
@@ -23,9 +23,10 @@ class Dinosaur(Sprite):
         self.dino_run = True
         self.dino_duck = False
         self.dino_jump = False
+        self.lives = 3
         self.jump_duck_vel = JUMP_AND_DUCK_VEL
-        self.start = time.time()
         self.setup_state()
+        self.sound = pygame.mixer.music
     
     def setup_state(self):
         self.has_power_up = False
@@ -39,22 +40,14 @@ class Dinosaur(Sprite):
         if self.dino_duck:
             self.duck()
             
-        if not self.dino_jump and time.time() - self.start < 14:
-            self.start = time.time()
-            run = pygame.mixer.music
-            run.load("dino_runner/assets/Songs/run.wav")
-            run.play()
-        
         if (user_input[pygame.K_UP] or user_input[pygame.K_SPACE]) and not self.dino_jump:
-            jump = pygame.mixer.music
-            jump.load("dino_runner/assets/Songs/jump.wav")
-            jump.play()
+            self.sound.load("dino_runner/assets/Songs/jump.wav")
+            self.sound.play()
             self.dino_jump = True
             self.dino_run = False
-        elif not self.dino_jump: 
-            if not self.dino_duck:
-                self.dino_run = True
-
+        elif not self.dino_jump and not self.dino_duck: 
+            self.dino_run = True
+    
         if user_input[pygame.K_DOWN]:
             self.dino_duck = True
         else:
@@ -87,6 +80,7 @@ class Dinosaur(Sprite):
         self.dino_jump = False
         self.dino_run = True
         self.jump_duck_vel = JUMP_AND_DUCK_VEL
+        
     
     def normal_player(self):
         self.image = RUNNING[0]
@@ -107,3 +101,11 @@ class Dinosaur(Sprite):
     
     def draw(self, screen, score):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        heart = HEART
+        heart_rect = heart.get_rect()
+        heart_rect.x = 20
+        heart_rect.y = 550
+        increment = 0
+        for i in range(self.lives):
+            screen.blit(heart, (heart_rect.x + increment, heart_rect.y))
+            increment += 30

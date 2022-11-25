@@ -135,6 +135,7 @@ class Game:
     def show_menu(self):
         self.screen.fill((255, 255, 255))
         self.draw_background(False)
+        self.player.lives = 3
         self.player.draw(self.screen, self.score)
         self.obstacle_manager.draw(self.screen)
         self.draw_score()
