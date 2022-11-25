@@ -49,12 +49,13 @@ class ObstacleManager:
                     game.player.reset()
                     break
                 else:
-                    self.obstacles.remove(obstacle)
+                    if game.player.type == "hammer":
+                        self.obstacles.remove(obstacle)
     
     def append(self, game):
         if game.score < 100:
             self.obstacles.append(Cactus(self.typeObstacles[0]))
-        elif game.score < 200:
+        elif game.score < 300:
             type = random.randint(0, 1)
             self.obstacles.append(Cactus(self.typeObstacles[type]))
         else:
